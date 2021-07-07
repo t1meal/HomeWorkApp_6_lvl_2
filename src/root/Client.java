@@ -13,14 +13,14 @@ public class Client {
             socket = new Socket("localhost", 8888);
 
             Scanner in = new Scanner(socket.getInputStream());
-            PrintWriter out = new PrintWriter(socket.getOutputStream());
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             Scanner console = new Scanner(System.in);
 
             Thread intro = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     while (true){
-                        String string = in.nextLine();
+                        String string = in.next();
                         if (string.equals("end")){
                             out.println("Клиент вышел!");
                             break;
