@@ -28,12 +28,12 @@ public class MainServ {
                 @Override
                 public void run() {
                     while (true){
-                        String string = in.nextLine();
-                        if (string.equals("end")){
+                        String str = in.nextLine();
+                        if (str.equals("end")){
                             out.println("Клиент вышел!");
                             break;
                         }
-                        System.out.println("Сервер: " + string);
+                        System.out.println("Сервер: " + str);
                     }
                 }
             });
