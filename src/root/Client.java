@@ -1,53 +1,54 @@
 package root;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import javax.xml.crypto.Data;
+import java.io.*;
 import java.net.Socket;
+import java.util.Date;
 import java.util.Scanner;
 
 public class Client {
     public static void main(String[] args) {
         Socket socket = null;
 
-        try {
-            socket = new Socket("localhost", 8888);
+            try {
+            socket = new Socket("localhost", 10200);
 
             Scanner in = new Scanner(socket.getInputStream());
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            Scanner console = new Scanner(System.in);
+            PrintWriter out = new PrintWriter (socket.getOutputStream(), true);
+            Scanner scanner = new Scanner(System.in);
 
-            Thread intro = new Thread(new Runnable() {
+            Thread t1 = new Thread(new Runnable() {
                 @Override
                 public void run() {
+
                     while (true){
-                        String string = in.next();
-                        if (string.equals("end")){
-                            out.println("Клиент вышел!");
+                        String str = in.nextLine();
+                        if (str.equals("/end")) {
+                            out.println("/end");
                             break;
+                            }
+                            System.out.println("Server: " + str);
                         }
-                        System.out.println("Сервер: " + string);
                     }
-                }
             });
+            t1.start();
 
-            intro.start();
-
-            Thread outro = new Thread(new Runnable() {
+            Thread t2 = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     System.out.println("Введите сообщение: ");
-                    String text = console.nextLine();
-                    out.println("Сообщение отправлено!");
+                    String text = scanner.nextLine();
+                    System.out.println("Сообщение отправлено!");
                     out.println(text);
                 }
             });
-            outro.setDaemon(true);
-            outro.start();
+            t2.setDaemon(true);
+            t2.start();
 
 
             try {
-                intro.join();
-            } catch (InterruptedException e) {
+               t1.join();
+           } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 

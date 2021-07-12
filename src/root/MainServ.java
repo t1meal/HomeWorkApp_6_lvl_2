@@ -1,5 +1,6 @@
 package root;
 
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -13,7 +14,7 @@ public class MainServ {
         Socket socket = null;
 
         try {
-            server = new ServerSocket(8888);
+            server = new ServerSocket(10200);
             System.out.println("Сервер запущен!");
 
             socket = server.accept();
@@ -24,33 +25,38 @@ public class MainServ {
             Scanner console = new Scanner(System.in);
 
 
-            Thread intro = new Thread(new Runnable() {
+            Thread t1 = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    while (true){
+                    while (true) {
                         String str = in.nextLine();
-                        if (str.equals("end")){
-                            out.println("Клиент вышел!");
+                        if (str.equals("/end")) {
+                            out.println("/end");
                             break;
                         }
-                        System.out.println("Сервер: " + str);
+                        System.out.println("Client:" + str);
                     }
                 }
             });
+            t1.start();
 
-            intro.start();
-
-            Thread outro = new Thread(new Runnable() {
+            Thread t2 = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     System.out.println("Введите сообщение: ");
-                    String text = console.nextLine();
-                    out.println("Сообщение отправлено!");
-                    out.println(text);
+                    String str = console.nextLine();
+                    System.out.println("Сообщение отправлено!");
+                    out.println(str);
                 }
             });
-            outro.setDaemon(true);
-            outro.start();
+            t2.setDaemon(true);
+            t2.start();
+
+            try {
+                t1.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
 
         } catch (IOException e) {
@@ -69,3 +75,4 @@ public class MainServ {
         }
     }
 }
+
